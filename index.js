@@ -64,8 +64,19 @@ server.get("/list/:app", function(req, res)
 setInterval(deleteExpiredHosts, 120000);
 
 server.get("/test", function(req, res)
-{	
-	res.send("works!");	
+{
+	res.send("works!");
+});
+
+server.get("/", function(req, res)
+{
+	var body = '<html><body><h1>zerohero</h1></body></html>';
+	res.writeHead(200, {
+		'Content-Length': Buffer.byteLength(body),
+		'Content-Type': 'text/html'
+	});
+	res.write(body);
+	res.end();
 });
 
 var port = process.env.PORT || 8080;
