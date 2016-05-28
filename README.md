@@ -35,7 +35,7 @@ List servers found on the local network.
 
 ## Story
 
-I've created many application where a user would have to enter the IP address of the server. For example, an iOS Netflix remote. You would run the server on your computer, open the iOS app, enter the server's IP address, then you could control Netflix!
+I've created many applications where a user would have to enter the IP address of the server. For example, an iOS Netflix remote. You would run the server on your computer, open the iOS app, enter the server's IP address, then you could control Netflix!
 
 The problem is that most people don't know what an IP address is, and they don't want to know. So I tested many zeroconf solutions including UDP broadcasting and Bonjour. I needed a solution that would work for client side JavaScript though. Anything can make an http call, so zerohero was born.
 
