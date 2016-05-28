@@ -23,7 +23,7 @@ server.get("/add/:app/:name/:ip", function(req, res)
 	dns.lookupService(ip, 80, function(err, hostname, service)
 	{
 		addHost(hostname, req.params.ip, req.params.name, req.params.app);
-		
+
 		res.send({message: "Added!", ip: req.params.ip, hostname: hostname, app: req.params.app, name: req.params.name});
 	});
 });
@@ -31,14 +31,14 @@ server.get("/add/:app/:name/:ip", function(req, res)
 server.get("/list/:app", function(req, res)
 {
 	var ip = getRemoteIP(req, res);
-	
+
 	dns.lookupService(ip, 80, function(err, hostname, service)
 	{
 		var results = [];
-		
+
 		//Records are only valid for 5 minutes.
 		var tsCheck = Math.round((new Date()).getTime() / 1000) - 60 * 5;
-		
+
 		db.each("SELECT DISTINCT ip, rowid AS id, host, name, app, date FROM hosts WHERE date > ? AND app = ? AND host = ? ORDER BY date DESC", tsCheck, req.params.app, hostname, function(err, row)
 		{
 			var dup = 0;
@@ -46,13 +46,13 @@ server.get("/list/:app", function(req, res)
 			{
 				if (results[x].ip === row.ip) dup = 1;
 			}
-			
+
 			if (!dup)
 			{
 				results.push(row);
 			}
-			
-			
+
+
 		}, function()
 		{
 			res.send(results);
@@ -95,17 +95,17 @@ server.listen(port, function()
 function getRemoteIP(req, res)
 {
 	var ip;
-	
+
 	//Support proxies.
 	if (req.headers['x-forwarded-for'])
 	{
 		ip = req.headers['x-forwarded-for'];
 	}
-	else 
+	else
 	{
 		ip = res.connection.remoteAddress;
 	}
-	
+
 	return ip;
 }
 
@@ -116,7 +116,7 @@ function deleteExpiredHosts()
 {
 	console.log("Removing expired hosts.");
 	var tsCheck = Math.round((new Date()).getTime() / 1000) - 60 * 5;
-	
+
 	db.serialize(function()
 	{
 		db.run("DELETE FROM hosts WHERE date < ?", tsCheck, function()
@@ -133,7 +133,7 @@ function createHostsTable()
 {
 	db.serialize(function()
 	{
-		db.run("CREATE TABLE IF NOT EXISTS `hosts` (`host` text NOT NULL, `date` int(32) NOT NULL,`ip` text NOT NULL, `app` text NOT NULL,`name` text NOT NULL );");
+		db.run("CREATE TABLE IF NOT EXISTS `hosts` (`host` text NOT NULL, `date` int(32) NOT NULL,`ip` text NOT NULL, `app` text NOT NULL,`name` text NOT NULL);");
 	});
 }
 
@@ -150,7 +150,7 @@ function addHost(host, ip, name, app)
 
 	db.serialize(function()
 	{
-		db.run("INSERT INTO hosts (host,ip,name, app, date) VALUES (?, ?, ?, ?, ?);", host, ip, name, app, ts);
+		db.run("INSERT INTO hosts (host, ip, name, app, date) VALUES (?, ?, ?, ?, ?);", host, ip, name, app, ts);
 	});
 }
 
